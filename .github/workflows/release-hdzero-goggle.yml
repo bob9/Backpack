@@ -1,0 +1,82 @@
+name: Release HDZero Goggle Backpack
+# Builds the ESP32 backpack that lives inside HDZero Goggle 1 and Goggle 2
+# (both use the same firmware) and publishes a release with a ready-to-flash
+# SD-card ELRS/ folder: drop it on the goggle SD card and run
+# Firmware -> Update ESP32 from the goggles menu.
+
+on:
+  push:
+    branches: [rtc-time-sync, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  TARGET: HDZero_Goggle_ESP32_Backpack_via_UART
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-platformio-hdzero-goggle
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio wheel
+
+      - name: Build
+        run: pio run -e $TARGET
+
+      - name: Assemble SD-card ELRS folder
+        run: |
+          set -e
+          BUILD=.pio/build/$TARGET
+          mkdir -p out/ELRS
+          cp "$BUILD/firmware.bin"   out/ELRS/firmware.bin
+          cp "$BUILD/bootloader.bin" out/ELRS/bootloader.bin
+          cp "$BUILD/partitions.bin" out/ELRS/partitions.bin
+          BOOT_APP0=$(find ~/.platformio/packages -name boot_app0.bin -path "*arduinoespressif32*" | head -1)
+          if [ -n "$BOOT_APP0" ]; then cp "$BOOT_APP0" out/ELRS/boot_app0.bin; fi
+          ls -la out/ELRS
+          VERSION="v1.0.${{ github.run_number }}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          (cd out && zip -r "hdzero-goggle-backpack-$VERSION-sdcard.zip" ELRS)
+          cp out/ELRS/firmware.bin "out/hdzero-goggle-backpack-$VERSION-firmware.bin"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: goggle-bp-${{ env.VERSION }}
+          name: HDZero Goggle 1 & 2 Backpack ${{ env.VERSION }}
+          body: |
+            ESP32 backpack firmware for the **HDZero Goggle 1 and Goggle 2**
+            (one firmware serves both goggles).
+
+            Adds over stock:
+            - **Clock sync over the air** (`MSP_ELRS_BACKPACK_SET_RTC` via ESP-NOW) —
+              the race timer keeps the goggle clock correct, so DVR recordings
+              carry real timestamps.
+            - **DVR recording names** (`MSP_ELRS_BACKPACK_SET_DVR_NAME`) — the race
+              timer names each heat's recording (needs matching hdzero-goggle
+              firmware with DVR race-name support).
+
+            **To install:** unzip `…-sdcard.zip` onto the goggle SD card (it puts
+            the files in an `ELRS/` folder), then on the goggles go to
+            **Firmware → Update ESP32**. Afterwards you can delete the folder.
+          files: |
+            out/hdzero-goggle-backpack-*-sdcard.zip
+            out/hdzero-goggle-backpack-*-firmware.bin
