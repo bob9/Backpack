@@ -767,6 +767,9 @@ static void startServices()
 #if defined(AAT_BACKPACK)
   WebAatInit(server);
 #endif
+#if defined(TARGET_TIMER_BACKPACK) && defined(PLATFORM_ESP32)
+  WebTimerTestInit(server);
+#endif
 #if defined(MAVLINK_ENABLED)
   server.on("/mavlink", HTTP_GET, WebMAVLinkHandler);
 #endif
