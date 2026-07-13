@@ -43,9 +43,6 @@ unsigned long rebootTime = 0;
 bool cacheFull = false;
 bool sendCached = false;
 bool sendRTC = false;
-uint32_t lastRTCSent = 0;
-
-#define RTC_RESYNC_INTERVAL 60000 // resend time to the VRX every 60s
 
 device_t *ui_devices[] = {
 #ifdef PIN_LED
@@ -542,13 +539,10 @@ void loop()
     sendCached = false;
   }
 
-  // Send the time to the VRX backpack when it requests it at boot,
-  // and periodically after that to correct for clock drift
-  if (connectionState == running &&
-      (sendRTC || now - lastRTCSent > RTC_RESYNC_INTERVAL))
+  // Send the time to the VRX backpack when it requests it at boot
+  if (connectionState == running && sendRTC)
   {
     sendRTC = false;
-    lastRTCSent = now;
     SendRTCViaEspnow();
   }
 }
