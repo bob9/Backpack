@@ -117,6 +117,10 @@ goggles. With this backpack it also:
 
 ## Install
 
+Setting up a whole race day (timer, dd-pits, goggles)? The
+[best race-day setup guide](https://dd-pits.threedigitalllamas.com.au/best-setup)
+covers every step. For just this backpack:
+
 For **HDZero Goggle** and **Goggle 2**. (ExpressLRS uses the same backpack
 firmware for the BoxPro.) You need the goggles, their SD card and a computer.
 
