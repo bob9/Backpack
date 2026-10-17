@@ -7,6 +7,7 @@ works: it's current ExpressLRS Backpack master with these additions on top.
 
 **[Download the latest race build](https://github.com/bob9/Backpack/releases/tag/v2026.07.17-aufpv-race)**
 · pairs with [HDZero goggle firmware 9.5.45](https://github.com/bob9/hdzero-goggle/releases/tag/v9.5.45)
+· built for race timing with [**dd-pits**](https://dd-pits.threedigitalllamas.com.au)
 
 ## What it adds to the stock backpack
 
@@ -97,13 +98,22 @@ recordings carry the right date and time. The TX backpack gets the time from
 WiFi (NTP) or from whatever sends it `SET_RTC` on its serial port, such as a
 race timer.
 
-### Who uses it
+### Built for dd-pits
 
-[dd-pits](https://github.com/bob9/dd-pits), the race-day companion for
-RotorHazard and FPVTrackside, uses all three: it names each pilot's DVR
-recording after their heat, keeps the goggle clock right, and puts every pilot
-on their race channel (Lowband too, with the
-[race-day goggle firmware](https://github.com/bob9/hdzero-goggle/releases/tag/v9.5.45)).
+[**dd-pits**](https://dd-pits.threedigitalllamas.com.au) is the free race-day
+companion for RotorHazard and FPVTrackside: a live dashboard on every phone,
+brackets, OBS overlays, race calls, AI commentary and lap times in pilots'
+goggles. With this backpack it also:
+
+- names each pilot's DVR recording after their heat,
+- keeps the goggle clock right,
+- puts every pilot on their race channel as each race is cued, Lowband too
+  with the [race-day goggle firmware](https://github.com/bob9/hdzero-goggle/releases/tag/v9.5.45).
+
+[Website and download](https://dd-pits.threedigitalllamas.com.au) ·
+[Watch it in action](https://dd-pits.threedigitalllamas.com.au/#watch) ·
+[HDZero firmware on dd-pits](https://dd-pits.threedigitalllamas.com.au/#hdzero) ·
+[Source on GitHub](https://github.com/bob9/dd-pits)
 
 ## Install
 
